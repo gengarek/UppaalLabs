@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan connecting, no, answer, connected, set_id;
+chan download, logout;
+int session_id,hs,cc;
+bool ok [3];
+</declaration>
+	<template>
+		<name x="5" y="5">Server</name>
+		<declaration>// Place local declarations here.
+int handshake = 8;</declaration>
+		<location id="id0" x="-263" y="-153">
+		</location>
+		<location id="id1" x="192" y="-160">
+		</location>
+		<location id="id2" x="40" y="-160">
+		</location>
+		<location id="id3" x="-128" y="-160">
+		</location>
+		<location id="id4" x="-391" y="-153">
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-238" y="-127">hs!=handshake</label>
+			<label kind="assignment" x="-228" y="-110">ok[cc]:=0</label>
+			<nail x="-246" y="-110"/>
+			<nail x="-144" y="-110"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-246" y="-178">hs==handshake</label>
+			<label kind="assignment" x="-245" y="-156">ok[cc]:=1</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-373" y="-170">connecting?</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-254" y="-272">hs!=handshake</label>
+			<label kind="synchronisation" x="-221" y="-255">no!</label>
+			<label kind="assignment" x="-238" y="-238">ok[cc]:=0</label>
+			<nail x="-127" y="-238"/>
+			<nail x="-391" y="-238"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-56" y="-96">set_id!</label>
+			<nail x="192" y="-72"/>
+			<nail x="-391" y="-76"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="80" y="-184">connected?</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-93" y="-153">hs==handshake</label>
+			<label kind="synchronisation" x="-68" y="-187">answer!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Client</name>
+		<parameter>const int[0,2] id</parameter>
+		<declaration>clock time;
+int timeout=10;</declaration>
+		<location id="id5" x="-248" y="-128">
+		</location>
+		<location id="id6" x="-88" y="-128">
+		</location>
+		<location id="id7" x="72" y="-208">
+		</location>
+		<location id="id8" x="-96" y="-208">
+		</location>
+		<location id="id9" x="-248" y="-208">
+		</location>
+		<location id="id10" x="-384" y="-208">
+		</location>
+		<init ref="id10"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-364" y="-280">no?</label>
+			<nail x="-272" y="-263"/>
+			<nail x="-382" y="-263"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-376" y="-152">logout?</label>
+			<nail x="-440" y="-128"/>
+			<nail x="-440" y="-208"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-192" y="-152">download!</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-16" y="-152">set_id?</label>
+			<label kind="assignment" x="-48" y="-128">session_id := id</label>
+			<nail x="72" y="-128"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-48" y="-232">connected!</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-204" y="-204">ok[id]==1</label>
+			<label kind="synchronisation" x="-200" y="-232">answer?</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-369" y="-232">connecting!</label>
+			<label kind="assignment" x="-374" y="-204">hs:=id+6,cc:=id,time:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Session</name>
+		<parameter>const int[0,2] id</parameter>
+		<declaration>clock time;</declaration>
+		<location id="id11" x="-96" y="-96">
+			<label kind="invariant" x="-119" y="-136">time&lt;=100</label>
+		</location>
+		<location id="id12" x="-280" y="-96">
+		</location>
+		<init ref="id12"/>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-221" y="-8">time==100</label>
+			<label kind="synchronisation" x="-208" y="-32">logout!</label>
+			<nail x="-96" y="-8"/>
+			<nail x="-280" y="-8"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-240" y="-120">id == session_id</label>
+			<label kind="synchronisation" x="-232" y="-96">download?</label>
+			<label kind="assignment" x="-221" y="-136">time:=0</label>
+		</transition>
+	</template>
+	<system>// List one or more processes to be composed into a system.
+system Server, Client, Session;</system>
+	<queries>
+	</queries>
+</nta>
