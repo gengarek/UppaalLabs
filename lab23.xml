@@ -2,9 +2,12 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
 	<declaration>// Place global declarations here.
+clock time;
+int N = 3;
 chan connecting, no, answer, connected, set_id;
 chan download, logout;
 int GSId,hs,cc, CSId;
+typedef int[0,1000] id_c;
 bool ok [3],load;
 </declaration>
 	<template>
@@ -17,14 +20,19 @@ int genId(int n)
   return n*137;
 }</declaration>
 		<location id="id0" x="-263" y="-161">
+			<name x="-273" y="-195">Init</name>
 		</location>
 		<location id="id1" x="192" y="-160">
+			<name x="182" y="-194">Connected</name>
 		</location>
 		<location id="id2" x="40" y="-160">
+			<name x="30" y="-194">Ok</name>
 		</location>
 		<location id="id3" x="-128" y="-160">
+			<name x="-138" y="-194">Response</name>
 		</location>
 		<location id="id4" x="-391" y="-161">
+			<name x="-401" y="-195">Idle</name>
 		</location>
 		<init ref="id4"/>
 		<transition>
@@ -84,14 +92,19 @@ load==false</label>
 		<declaration>bool logged;
 int sesId;</declaration>
 		<location id="id5" x="-68" y="-204">
+			<name x="-78" y="-238">Response</name>
 		</location>
 		<location id="id6" x="-178" y="-204">
+			<name x="-188" y="-238">Connecting</name>
 		</location>
 		<location id="id7" x="-384" y="-208">
+			<name x="-394" y="-242">Idle</name>
 		</location>
 		<location id="id8" x="-161" y="-93">
+			<name x="-171" y="-127">Session</name>
 		</location>
 		<location id="id9" x="51" y="-204">
+			<name x="41" y="-238">Connected</name>
 		</location>
 		<init ref="id7"/>
 		<transition>
@@ -136,25 +149,30 @@ int sesId;</declaration>
 	<template>
 		<name>Session</name>
 		<parameter>const int[0,2] id</parameter>
-		<declaration>clock time;</declaration>
+		<declaration>int loadTime, limit = 10000;</declaration>
 		<location id="id10" x="42" y="-8">
-			<label kind="invariant" x="17" y="8">time&lt;=100</label>
+			<name x="32" y="-42">Downlowad</name>
+			<label kind="invariant" x="17" y="8">time&lt;=10000</label>
 		</location>
 		<location id="id11" x="170" y="-93">
+			<name x="160" y="-127">Open</name>
 		</location>
 		<location id="id12" x="-51" y="-93">
+			<name x="-76" y="-127">Closed</name>
 		</location>
 		<init ref="id12"/>
 		<transition>
 			<source ref="id11"/>
 			<target ref="id10"/>
-			<label kind="synchronisation" x="68" y="-42">download?</label>
+			<label kind="select" x="178" y="-42">e : id_c</label>
+			<label kind="synchronisation" x="76" y="-8">download?</label>
+			<label kind="assignment" x="178" y="-17">loadTime:=e</label>
 			<nail x="170" y="-8"/>
 		</transition>
 		<transition>
 			<source ref="id10"/>
 			<target ref="id12"/>
-			<label kind="guard" x="-170" y="-93">time==100</label>
+			<label kind="guard" x="-102" y="8">time&gt;=limit</label>
 			<label kind="synchronisation" x="-153" y="-76">logout!</label>
 			<label kind="assignment" x="-170" y="-59">load:=false,time:=0,
 ok[id]:=0</label>
@@ -164,7 +182,7 @@ ok[id]:=0</label>
 		<transition>
 			<source ref="id12"/>
 			<target ref="id11"/>
-			<label kind="guard" x="-33" y="-127">cc==id</label>
+			<label kind="guard" x="51" y="-93">cc==id</label>
 			<label kind="synchronisation" x="51" y="-119">set_id!</label>
 		</transition>
 	</template>
