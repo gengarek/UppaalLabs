@@ -98,7 +98,7 @@ int sesId;</declaration>
 			<name x="-188" y="-238">Connecting</name>
 		</location>
 		<location id="id7" x="-384" y="-208">
-			<name x="-394" y="-242">Idle</name>
+			<name x="-416" y="-229">Idle</name>
 		</location>
 		<location id="id8" x="-161" y="-93">
 			<name x="-171" y="-127">Session</name>
@@ -189,5 +189,125 @@ ok[id]:=0</label>
 	<system>// List one or more processes to be composed into a system.
 system Server, Client, Session;</system>
 	<queries>
+		<query>
+			<formula>load==true --&gt; forall (i:int[0,2]) Session(i).Downlowad
+			</formula>
+			<comment>Jezeli ktos sciaga plik =&gt; sciaganie jest mozliwe
+			</comment>
+		</query>
+		<query>
+			<formula>forall (i:int[0,2]) Session(i).Closed --&gt; load==false
+			</formula>
+			<comment>Jezeli sesja bedzie zamknieta =&gt; sciaganie pliku sie skonzy
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Server.Ok
+			</formula>
+			<comment>server moze byc w stanie ok
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Server.Ok
+			</formula>
+			<comment>server bedze w stanie ok
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Server.Idle
+			</formula>
+			<comment>server moze byc idle
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Server.Idle
+			</formula>
+			<comment>Server napewno bedzie idle
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; forall (i:int[0,2]) Session(i).Closed
+			</formula>
+			<comment>sesje moga byc zamkniete
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; forall (i:int[0,2]) Session(i).Closed
+			</formula>
+			<comment>sesje napewno beda zamkniete
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Server.Connected
+			</formula>
+			<comment>Serwer moze byc podlaczony
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Server.Connected
+			</formula>
+			<comment>Serwer napewno bedzie podlaczony
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt;Server.Response
+			</formula>
+			<comment>Serwer moze wyslac odpowiedz
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt;Server.Response
+			</formula>
+			<comment>Serwer napewno wysle odpowiedz 
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Session(2).Downlowad 
+			</formula>
+			<comment>Sesja(2) moze zaczac sciaganie
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Session(2).Downlowad
+			</formula>
+			<comment>Sesja(2) napewno zacznie sciaganie
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Client(2).Session
+			</formula>
+			<comment>Clijent(2) (majacy poprawny handshake) moze otworzyc sesje
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Client(2).Session
+			</formula>
+			<comment>Clijent(2) (majacy poprawny handshake) napewno otworzy sesje
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; forall (i:int[0,2]) Client(i).Session
+			</formula>
+			<comment>Stan Session procesu Clients moze zostac osiagnienty
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; forall (i:int[0,2]) Client(i).Session
+			</formula>
+			<comment>Stan Session procesu Clients napewno bedzie osiagnienty
+			</comment>
+		</query>
+		<query>
+			<formula>A[] Server.Idle
+			</formula>
+			<comment>Serwer zawsze IDLE
+			</comment>
+		</query>
+		<query>
+			<formula>A[] forall (i:int[0,1]) Client(i).Idle
+			</formula>
+			<comment>Clijenci zawsze w IDLE
+			</comment>
+		</query>
 	</queries>
 </nta>
