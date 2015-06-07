@@ -21,12 +21,12 @@ Stan Session procesu Clients moze zostac osiagnienty
 E<> forall (i:int[0,2]) Client(i).Session
 
 /*
-Clijent(2) (majacy poprawny handshake) napewno otworzy sesje
+Klient(2) (majacy poprawny handshake) napewno otworzy sesje
 */
 A<> Client(2).Session
 
 /*
-Clijent(2) (majacy poprawny handshake) moze otworzyc sesje
+Klient(2) (majacy poprawny handshake) moze otworzyc sesje
 */
 E<> Client(2).Session
 
@@ -88,7 +88,7 @@ A<> Server.Ok
 /*
 Server moze byc w stanie ok
 */
-E<> Server.Ok						
+E<> Server.Ok
 
 /*
 Jezeli sesja bedzie zamknieta => sciaganie pliku sie skonzy
