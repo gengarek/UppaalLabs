@@ -1,0 +1,97 @@
+\documentclass{article}
+
+% preambuła
+\input{../preamble.tex}
+
+\title{Modelowa weryfikacja systemów w~UPPAAL}
+\date{8 czerwca 2015}
+
+\begin{document}
+
+	\maketitle
+	
+	\section{Zadanie 1}
+	
+		Na potrzeby realizacji pierwszej części zadania został utworzony szablon serwera (\textit{Sever}), klienta (\textit{Client}) oraz sesji (\textit{Session}). Szablony te zostały zaprezentowane kolejno na rys. \ref{figure:server}-\ref{figure:session}.
+		
+		Klient łączący się do serwera przesyła swój identyfikator (\textit{hs}), który po zatwierdzeniu przez serwer otrzymuje od niego sygnał (\textit{answer}), następnie po podłączeniu (\textit{connected}) tworzona jest sesja klienta (\textit{set\_id}).
+		
+		Po otwarciu sesji (\textit{Session.Open}) możliwe jest przeście do stanu pobierania (\textit{Session.Download}), który może trwać nie więcej niż 10000 sekund, po czym następuje wylogowanie klienta (przechodzi w stan \textit{Client.Idle}) i zamknięcie sesji (\textit{Session.Closed}).
+		
+		W przydaku podania przez klienta nieprawidłowego identyfikatora \textit{hs}, połączenie zostaje zablokowane i klient oraz serwer wracją do stanu \textit{Idle} (\textit{Server.Idle}, \textit{Client.Idle}).
+		
+		\begin{figure}[h]
+			\includegraphics[width=\textwidth]{lab23/server}
+			\caption{Szablon serwera}
+			\label{figure:server}
+		\end{figure}
+		
+		\begin{figure}[h]
+			\includegraphics[width=\textwidth]{lab23/client}
+			\caption{Szablon klienta}
+			\label{figure:client}
+		\end{figure}
+		
+		\begin{figure}[h]
+			\includegraphics[width=\textwidth]{lab23/session}
+			\caption{Szablon sesji}
+			\label{figure:session}
+		\end{figure}
+	
+	\newpage
+	\section{Zadanie 2}
+	
+		W celu weryfikacji zbudowanego modelu zostały przygotowane i zweryfikowane następujące własności:
+		
+		\begin{enumerate}
+				
+			\item Bezpieczeństwo
+			
+				\begin{enumerate}
+				
+					\item Serwer będzie zawsze w stanie oczekiwania (FALSE) \\ $ A[] Server.Idle $
+					\item Klienci będą zawsze w stanie oczekiwania (FALSE) \\ $ A[] forall (i:int[0,2]) Client(i).Idle $
+				
+				\end{enumerate}
+			
+			\item Osiągalność
+			
+				\begin{enumerate}
+
+					\item Stan Session procesu Clients napewno będzie osiągnięty (FALSE) \\ $ A<> forall (i:int[0,2]) Client(i).Session $
+					\item Stan Session procesu Clients moze zostać osiagnienty (FALSE) \\ $ E<> forall (i:int[0,2]) Client(i).Session $
+					\item Klient(2) (majacy poprawny handshake) na pewno otworzy sesje (FALSE) \\ $ A<> Client(2).Session $					
+					\item Klient(2) (majacy poprawny handshake) moze otworzyć sesje (TRUE) \\ $ E<> Client(2).Session $
+					\item Sesja(2) na pewno zacznie ściągeni (FALSE) \\ $ A<> Session(2).Downlowad $
+					\item Sesja(2) może zacząć ściąganie (TRUE) \\ $ E<> Session(2).Downlowad $
+					\item Serwer napewno wyśle odpowiedź (FALSE) \\ $ A<>Server.Response $
+					\item Serwer może wysłać odpowiedź (TRUE) \\ $ E<>Server.Response $
+					\item Serwer na pewno będzie podłączony (FALSE) \\ $ A<> Server.Connected $
+					\item Serwer może być podłączony (TRUE) \\ $ E<> Server.Connected $
+					\item Sesje na pewno będą zamknięte (TRUE) \\ $ A<> forall (i:int[0,2]) Session(i).Closed $
+					\item Sesje moga być zamknięte (TRUE) \\ $ E<> forall (i:int[0,2]) Session(i).Closed $
+					\item Serwer na pewno będzie w stanie idle (TRUE) \\ $ A<> Server.Idle $
+					\item Server moze być w stanie idle (TRUE) \\ $ E<> Server.Idle $					
+					\item Server na pewno będzie w stanie ok (FALSE) \\ $ A<> Server.Ok $
+					\item Server może być w stanie ok (TRUE) \\ $ E<> Server.Ok  $					
+				
+				\end{enumerate}
+				
+			\item
+				
+				\begin{enumerate}
+				
+					\item Jeśli sesja będzie zamknieta to ściągenie pliku sie skończy (TRUE) \\ $ forall (i:int[0,2]) Session(i).Closed --> load==false $
+					\item Jeśli ktoś ściąga plik to ściąganie jest możliwe (FALSE) \\ $ load!=true --> forall (i:int[0,2]) Session(i).Downlowad $
+				
+				\end{enumerate}
+			
+		\end{enumerate}
+		
+		\begin{figure}[h]
+			\includegraphics[width=\textwidth,angle=90]{lab23/verifier}
+			\caption{Wynik działania weryfikatora w progremie UPPALL}
+		\end{figure}
+		
+			
+\end{document}

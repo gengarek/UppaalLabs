@@ -1,0 +1,72 @@
+
+\makeatletter
+
+\newcommand{\linia}{\rule{\linewidth}{0.4mm}}
+\newcommand{\subtitle}[1]{\def\@subtitle{#1}}
+\newcommand{\subject}[1]{\def\@subject{#1}}
+\newcommand{\tutor}[1]{\def\@tutor{#1}}
+\newcommand{\group}[1]{\def\@group{#1}}
+
+\subtitle{}
+\subject{}
+\tutor{}
+\group{}
+
+\renewcommand{\maketitle}{\begin{titlepage}
+
+	\newgeometry{top=2cm, bottom=2cm, left=1cm, right=1cm}
+	
+	\begin{minipage}[t]{0.4\textwidth}
+		\flushleft
+   	 	\normalsize \textsc{\@author} \par
+	\end{minipage}	
+	\hfill
+	\begin{minipage}[t]{0.4\textwidth}
+		\flushright		
+   	 	\normalsize \textsc{\@date} \par
+	\end{minipage}
+
+    \vspace{3cm}
+
+    \noindent\linia
+
+    \begin{center}
+      
+      \small \textsc{\@subtitle}  
+
+      \LARGE \textsc{\@title}
+
+	\end{center}
+
+    \noindent\linia
+
+    \vspace{0.5cm}
+
+    \begin{flushright}
+
+    \begin{minipage}{5.5cm}
+
+    \vspace{1cm}
+
+    \textit{\small Prowadzący:}\\
+	\normalsize \textsc{\@tutor} \par
+	
+    \vspace{1cm}
+	
+    \textit{\small Grupa:}\\
+	\normalsize \textsc{\@group} \par
+
+    \end{minipage}
+    
+    \end{flushright}
+    
+    \vspace*{\stretch{6}}
+
+    \begin{center}
+
+    \end{center}
+
+  \end{titlepage}
+}
+
+\makeatother
