@@ -1,0 +1,31 @@
+MODULE main
+VAR
+	Polska : kraj(Czechy.podatki);
+	Czechy : kraj(Polska.podatki);
+DEFINE
+	
+	PL := Polska.podatki < Czechy.podatki; --Polska wygrywa
+	CZ := Czechy.podatki < Polska.podatki; --Czechy wygrywają
+	remis := Czechy.podatki = Polska.podatki; --remis (równe podatki)
+
+--do czego doprowadzi zwycięstwo Polski?
+CTLSPEC AG(PL -> AX(AF(CZ | remis)))
+CTLSPEC AG(PL -> AX(AF(remis)))
+CTLSPEC AG(PL -> AX(AF(CZ)))
+
+--czy remis jest trwały?
+CTLSPEC AG(remis -> AX(remis))
+CTLSPEC !remis -> AG(PL | CZ)
+
+MODULE kraj(podatki_sasiada)
+VAR
+	podatki : 0..25;
+ASSIGN
+	init(podatki) := 10..20;
+	next(podatki) := case
+		podatki = 0 | podatki = 25 : podatki;
+		podatki < podatki_sasiada : podatki + 1;
+		podatki > podatki_sasiada : podatki - 1;
+		podatki = podatki_sasiada : podatki - 1;
+		TRUE : podatki;
+	esac;
